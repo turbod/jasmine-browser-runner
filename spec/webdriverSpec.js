@@ -83,6 +83,46 @@ describe('webdriver', function() {
 
         expect(builder.server).not.toMatch(/saucelabs/);
       });
+
+      it('handles headlessChrome with an array of special browser capabilities', function() {
+        const builder = new MockWebdriverBuilder();
+
+        buildWebdriver(
+          { name: 'headlessChrome', caps: ['--disable-dev-shm-usage'] },
+          builder
+        );
+
+        expect(builder.browserName).toEqual('chrome');
+        expect(builder.capabilities.get('goog:chromeOptions')).toEqual({
+          args: [
+            '--headless',
+            '--no-sandbox',
+            'window-size=1024,768',
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+          ],
+        });
+      });
+
+      it('handles headlessChrome with a special browser capability', function() {
+        const builder = new MockWebdriverBuilder();
+
+        buildWebdriver(
+          { name: 'headlessChrome', caps: '--disable-dev-shm-usage' },
+          builder
+        );
+
+        expect(builder.browserName).toEqual('chrome');
+        expect(builder.capabilities.get('goog:chromeOptions')).toEqual({
+          args: [
+            '--headless',
+            '--no-sandbox',
+            'window-size=1024,768',
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+          ],
+        });
+      });
     });
   });
 
